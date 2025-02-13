@@ -19,6 +19,10 @@ dag = DAG(
     default_args=default_args,
     description='A simple DAG with multiple tasks',
     schedule_interval=None,  # Run manually for this example
+    access_control={
+        'Admin': {'can_read', 'can_edit', 'can_delete'},  # Admin role can read, edit, and delete
+        'All': {'can_read'},  # All users can read the DAG
+    },
 )
 
 # Define tasks
