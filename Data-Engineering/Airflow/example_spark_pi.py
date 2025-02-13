@@ -30,6 +30,5 @@ submit = SparkKubernetesOperator(
     namespace="spark",
     application_file="example_spark_pi.yaml",
     dag=dag,
-    api_group="sparkoperator.hpe.com",
-    enable_impersonation_from_ldap_user=True
+    enable_impersonation_from_ldap_user=True  # Ensure this is needed for your setup
 )
