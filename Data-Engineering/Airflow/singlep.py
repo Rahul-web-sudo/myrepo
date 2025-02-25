@@ -20,7 +20,7 @@ dag = DAG(
 pod_config = {
     'namespace': 'default',  # The namespace in which the pod will run
     'image': 'python:3.8',    # Example container image (change to the one needed for your tasks)
-    'name': 'airflow-task-pod',  # Pod name
+    'name': 'shared-airflow-task-pod',  # Shared pod name across all tasks
     'is_delete_operator_pod': True,  # Automatically delete the pod after the task is done
     'retries': 1,   # Number of retries in case of failure
 }
@@ -28,6 +28,7 @@ pod_config = {
 # Task 1
 task_1 = KubernetesPodOperator(
     task_id='task_1',  # Explicit task_id here
+    name=pod_config['name'],  # Use the same pod name across tasks
     cmds=['python', '-c', 'print("Task 1 running")'],
     **pod_config,  # Pass the pod configuration
     dag=dag
@@ -36,6 +37,7 @@ task_1 = KubernetesPodOperator(
 # Task 2
 task_2 = KubernetesPodOperator(
     task_id='task_2',  # Explicit task_id here
+    name=pod_config['name'],  # Use the same pod name across tasks
     cmds=['python', '-c', 'print("Task 2 running")'],
     **pod_config,  # Pass the pod configuration
     dag=dag
@@ -44,10 +46,11 @@ task_2 = KubernetesPodOperator(
 # Task 3
 task_3 = KubernetesPodOperator(
     task_id='task_3',  # Explicit task_id here
+    name=pod_config['name'],  # Use the same pod name across tasks
     cmds=['python', '-c', 'print("Task 3 running")'],
     **pod_config,  # Pass the pod configuration
     dag=dag
 )
 
-# Set task dependencies
+# Set task dependencies so that they run sequentially in the same pod
 task_1 >> task_2 >> task_3
